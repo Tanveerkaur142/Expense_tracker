@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% load static %}
+    <title>Expense Tracker</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
+
+    <style>
+        body {
+            background-image: url("{% static 'expense_tracker/homebackground.png' %}");
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center center;
+            background-attachment: fixed;
+        }
+        html {
+            height: 100%;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        .navbar-custom {
+            background-color: steelblue; 
+        }
+        .navbar-brand {
+            font-weight: bold;
+            color: #ffffff !important; /* White text for navbar brand */
+        }
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1030;
+        }
+        .sidebar {
+            width: 250px;
+            background-color: steelblue; /* Blue background for sidebar */
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            padding: 20px;
+            color: #ffffff; /* White text for sidebar */
+            position: fixed;
+            top: 56px; /* Space for navbar */
+            left: 0; /* Position the sidebar on the left */
+            bottom: 0;
+            overflow-y: auto;
+        }
+        .sidebar .list-unstyled {
+            padding-left: 0;
+        }
+        .sidebar .list-unstyled li {
+            margin-bottom: 10px;
+        }
+        .sidebar .list-unstyled a {
+            color: #ffffff;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+        .sidebar .list-unstyled i {
+            margin-right: 10px; /* Space between icon and text */
+        }
+        .btn-custom {
+            background-color: steelblue; /* Blue buttons */
+            color: #ffffff; /* White text for buttons */
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            margin-bottom: 10px;
+            transition: background-color 0.3s ease;
+            text-align: center;
+            display: block;
+            width: 100%; /* Full width button */
+        }
+        .btn-custom:hover {
+            background-color: #0a1b4b; /* Darker blue on hover */
+        }
+        .content {
+            margin-left: 250px; /* Space for sidebar on the left */
+            padding: 20px;
+            margin-top: 56px; /* Space for navbar */
+            height: calc(100vh - 56px); /* Adjust height to fit within viewport */
+            overflow-y: auto; /* Scrollable content if needed */
+        }
+        .card {
+            margin-bottom: 20px; /* Space between cards */
+            width: 100%; /* Full width of the column */
+            max-width: 500px; /* Maximum width of the card */
+            height: 300px; /* Fixed height for both cards */
+        }
+        .card-body {
+            padding: 20px; /* Padding inside card */
+            height: calc(100% - 40px); /* Adjust height to fit within the card */
+        }
+        .card-chart {
+            height: 100%; /* Fit chart within card body */
+        }
+        table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 12px;
+    text-align: left;
+}
+
+thead {
+    background-color: steelblue; /* Header background */
+    color: white; /* Header text color */
+}
+
+tbody tr:nth-child(even) {
+    background-color: #b0c4de; /* Light steelblue for even rows */
+}
+
+tbody tr:nth-child(odd) {
+    background-color: steelblue; /* Steelblue for odd rows */
+    color: white; /* Ensure text is readable on dark background */
+}
+
+tbody tr:hover {
+    background-color: #4682b4; /* Darker steelblue for hover effect */
+    color: white; /* Ensure text is readable on hover */
+}
+
+
+        .icon-container {
+        text-align: center;
+    }
+
+        .profile-icon {
+        width: 140px; 
+        height: 140px; 
+        display: inline-block;
+        display: block;
+        margin: 0 auto;
+        border-radius: 50%; 
+        object-fit: cover; 
+        margin-bottom: 15px;
+        }
+        .username {
+        text-align: center; 
+        margin-top: 10px; 
+        font-size: 30px;
+    }
+    .icon-container2 {
+        list-style: none; /* Remove bullet points */
+        display: flex; /* Use flexbox for alignment */
+        justify-content: center; /* Center horizontally */
+        align-items: center; /* Center vertically if needed */
+        margin: 0; /* Remove default margin */
+        padding: 0; /* Remove default padding */
+    }
+    .card2{
+        border: none; /* Remove default border if needed */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add shadow for card effect */
+        border-radius: 8px; /* Rounded corners */
+        overflow: hidden; /* Ensure images and content fit within card */
+        margin-bottom: 20px; /* Space between cards */
+        text-align: center; /* Center text within card body */
+        width:200px;
+        height:350px;
+    }
+
+    .card-img-top2{
+        width: 100%; /* Make image responsive */
+        height: auto; /* Maintain aspect ratio */
+    }
+
+    .card-title2{
+        font-size: 35px; /* Adjust font size as needed */
+        font-weight: 70px;
+        font-style: italic;
+    }
+    #totalIncome,#totalSavings ,#totalExpenses,#netBalance{
+    font-weight: bold;
+}
+
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-custom">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Expense Tracker</a>
+        </div>
+    </nav>
+
+    <div class="sidebar">
+        <ul class="list-unstyled">
+            <li class="icon-container">
+               <a href="{% url 'admin:index' %}"><img src="{% static 'expense_tracker/homeicon.png' %}" alt="User Icon" class="profile-icon"></a>
+            </li>
+            <li class="username"><b><i><b> hello123</b></i></b></li>
+            <li><a class="btn btn-custom" href="{% url 'income' %}"><i></i> <b>Income</b></a></li>
+            <li><a class="btn btn-custom" href="{% url 'expense' %}"><i></i> <b>Expense</b></a></li>
+            <li><a class="btn btn-custom" href="{% url 'savings' %}"><i></i> <b>Savings</b></a></li>
+            <li><a class="btn btn-custom" href="{% url 'budget-list' %}"><i></i> <b>Budget Planner</b></a></li>
+            <li><a class="btn btn-custom" href="{% url 'monthly-report' %}"><i></i> <b>Monthly Report</b></a></li>
+            <li><a class="btn btn-custom" href="{% url 'logout' %}"><i></i> <b>Logout</b></a></li>
+
+        </ul>
+    </div>
+
+    <div class="content">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title"><b>Financial Overview</b></h5>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-striped table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Category</th>
+                                    <th>Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><b>Total Income</b></td>
+                                    <b> <td id="totalIncome"></td></b>
+                                </tr>
+                                <tr>
+                                    <td><b>Total Savings</b></td>
+                                    <td id="totalSavings"></td>
+                                </tr>
+                                <tr>
+                                    <td><b>Total Expenses</b></td>
+                                    <td id="totalExpenses"></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Net Balance</strong></td>
+                                    <td id="netBalance"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title"><b>Income, Savings, and Expenses</b></h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="myChart" class="card-chart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card2">
+                    <a href="{% url 'calculator' %}">
+                        <img src="{% static 'expense_tracker/calculator icon.png' %}" alt="Calculator Icon" class="card-img-top2 profile-icon">
+                    </a>
+                    <div class="card-body text-center">
+                        <h5 class="card-title2">Calculator</h5>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card2">
+                    <a href="{% url 'todo' %}">
+                        <img src="{% static 'expense_tracker/todoicon.png' %}" alt="To-Do Icon" class="card-img-top2 profile-icon">
+                    </a>
+                    <div class="card-body text-center">
+                        <h5 class="card-title2">To-Do List</h5>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card2">
+                    <a href="{% url 'currency_converter' %}">
+                        <img src="{% static 'expense_tracker/currencyconvertericon.png' %}" alt="Currency Converter Icon" class="card-img-top2 profile-icon">
+                    </a>
+                    <div class="card-body text-center">
+                        <h5 class="card-title2">Currency Converter</h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+
+    <script>
+    
+    const totalIncome = parseFloat('{{ total_income }}') || 0;
+    const totalSavings = parseFloat('{{ total_savings }}') || 0;
+    const totalExpenses = parseFloat('{{ total_expenses }}') || 0;
+
+   
+    console.log('Total Income:', totalIncome);
+    console.log('Total Savings:', totalSavings);
+    console.log('Total Expenses:', totalExpenses);
+
+    
+    document.getElementById('totalIncome').textContent = totalIncome.toFixed(2);
+    document.getElementById('totalSavings').textContent = totalSavings.toFixed(2);
+    document.getElementById('totalExpenses').textContent = totalExpenses.toFixed(2);
+    document.getElementById('netBalance').textContent = (totalIncome + totalSavings - totalExpenses).toFixed(2);
+
+    // Chart.js code
+    const ctx = document.getElementById('myChart').getContext('2d');
+    const myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Income', 'Savings', 'Expenses'],
+            datasets: [{
+                label: 'Amount',
+                data: [totalIncome, totalSavings, totalExpenses],
+                backgroundColor: [
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(255, 99, 132, 0.2)'
+                ],
+                borderColor: [
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(255, 99, 132, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+    </script>
+</body>
+</html>  

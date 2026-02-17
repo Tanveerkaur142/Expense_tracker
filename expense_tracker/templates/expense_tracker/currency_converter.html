@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% load static %}
+    <title>Currency Converter</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+        body {
+            background-image: url("{% static 'expense_tracker/currency.png' %}");
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center center;
+            background-attachment: fixed;
+        }
+        .navbar-custom {
+            background-color: steelblue;
+        }
+        .navbar-custom .navbar-brand, 
+        .navbar-custom .nav-link {
+            color: #ffffff;
+        }
+        .navbar-custom .nav-link:hover {
+            color: #0a1b4b;
+        }
+        .navbar-custom .nav-link.active {
+            color: #0a1b4b;
+            font-weight: bold;
+        }
+        .navbar-nav {
+            flex-direction: row;
+        }
+        .nav-item {
+            padding: 0 15px;
+        }
+
+        .card {
+            border: 2px solid #dee2e6;
+        }
+        .btn {
+            background-color: steelblue;
+            color: #dee2e6;
+        }
+
+        .currency-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 500px;
+            margin: 20px auto;
+        }
+        .currency-container h2 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            text-align: center;
+            color: steelblue;
+        }
+        .currency-container form {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 20px;
+        }
+        .currency-container input[type="number"], 
+        .currency-container select, 
+        .currency-container button {
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            width: 100%;
+        }
+        .currency-container button {
+            background-color: steelblue;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .currency-container button:hover {
+            background-color:steelblue;
+        }
+        .currency-container .result {
+            font-size: 18px;
+            font-weight: bold;
+            text-align: center;
+            color: #8a2be2;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <nav class="navbar navbar-expand-lg navbar-custom border-bottom">
+                    <div class="container-fluid">
+                        <a class="navbar-brand" href="#">Expense Tracker</a>
+                        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                        <div class="collapse navbar-collapse" id="navbarNav">
+                            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{% url 'home' %}">Home</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{% url 'calculator' %}">Calculator</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{% url 'todo' %}">ToDo</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link active" aria-current="page" href="{% url 'currency_converter' %}">Currency Converter</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </nav>
+            </div>
+        </div>
+        <div class="currency-container">
+            <h2>Currency Converter</h2>
+            <form method="post">
+                {% csrf_token %}
+                <label for="amount">Amount:</label>
+                <input type="number" step="0.01" id="amount" name="amount" placeholder="Enter amount" required>
+                
+                <label for="from_currency">From Currency:</label>
+                <select id="from_currency" name="from_currency">
+                    <option value="USD">USD</option>
+                    <option value="EUR">EUR</option>
+                    <option value="GBP">GBP</option>
+                    <option value="INR">INR</option>
+                    <!-- Add more currencies as needed -->
+                </select>
+                
+                <label for="to_currency">To Currency:</label>
+                <select id="to_currency" name="to_currency">
+                    <option value="USD">USD</option>
+                    <option value="EUR">EUR</option>
+                    <option value="GBP">GBP</option>
+                    <option value="INR">INR</option>
+                    <!-- Add more currencies as needed -->
+                </select>
+                
+                <button type="submit">Convert</button>
+            </form>
+            
+            {% if converted_amount is not None %}
+            <div class="result">
+                Converted Amount: {{ converted_amount }}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>
+
+
